@@ -36,13 +36,13 @@ def do(signer, namespace, bucketName, fileName):
     message = "Failed: The meatada for object " + str(fileName) + " could not be retrieved."
 
     try:
-        print("Searching for bucket and object", file=sys.stderr)
-        object = client.get_object(namespace, bucketName, fileName)
-        objectMeta = object.meatada.getvalue("ETag")
-    
+        logging.getLogger().info("Searching for bucket and object")
+        #object = client.get_object(namespace, bucketName, fileName)
+        head_object = client.head_object(namespace, bucketName, fileName)
+        objectMeta = head_object.headers['ETag']
 
-        print("found object", file=sys.stderr)
-        if object.status == 200:
+        logging.getLogger().info("found object")
+        if head_object.status == 200:
             message = "Success: The object " + str(fileName) + " was retrieved, metadata: " + str(objectMeta)
 
     except Exception as e:
